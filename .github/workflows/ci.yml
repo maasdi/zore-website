@@ -26,6 +26,7 @@ jobs:
       - name: Validate content and browser script
         run: |
           python tests/validate_content.py
+          python -m unittest discover -s tests -p 'test_*.py'
           node --check public/assets/site.js
       - name: Build production image and shutdown fixture
         run: |

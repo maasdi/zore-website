@@ -45,9 +45,18 @@ def main():
     parser.add_argument("--run-id", required=True)
     options = parser.parse_args()
     commit = verified_commit(options.run_id, os.environ["GITHUB_REPOSITORY"])
+    eligible = True
+    if os.environ.get("AUTOMATIC_PROMOTION") == "true":
+        branch = github_json(f"repos/{os.environ['GITHUB_REPOSITORY']}/git/ref/heads/main")
+        head = branch.get("object", {}).get("sha", "")
+        require(re.fullmatch(r"[0-9a-f]{40}", head), "main head is not a full SHA")
+        eligible = commit == head
     with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as destination:
         destination.write(f"commit={commit}\n")
+        destination.write(f"eligible={str(eligible).lower()}\n")
     print(f"Verified successful main CI run {options.run_id} for {commit}")
+    if not eligible:
+        print("Skipping automatic promotion because main has a newer commit")
 
 
 if __name__ == "__main__":

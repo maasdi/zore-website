@@ -1,6 +1,10 @@
 name: Promote tested image
 
 on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
     inputs:
       run_id:
@@ -12,13 +16,45 @@ permissions:
   contents: read
   actions: read
 
+env:
+  SELECTED_RUN_ID: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.id || inputs.run_id }}
+
 concurrency:
   group: zore-website-production
+  queue: max
   cancel-in-progress: false
 
 jobs:
+  select:
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.head_repository.full_name == github.repository))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      commit: ${{ steps.ci.outputs.commit }}
+      eligible: ${{ steps.ci.outputs.eligible }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.13'
+      - name: Verify selected CI run
+        id: ci
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUTOMATIC_PROMOTION: ${{ github.event_name == 'workflow_run' }}
+        run: |
+          python tests/verify_ci_run.py --run-id "$SELECTED_RUN_ID"
   deploy:
-    if: github.ref == 'refs/heads/main'
+    needs: select
+    if: needs.select.outputs.eligible == 'true'
     runs-on: ubuntu-24.04
     environment: production
     timeout-minutes: 20
@@ -31,30 +67,24 @@ jobs:
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
         with:
           python-version: '3.13'
-      - name: Verify selected CI run
-        id: ci
-        env:
-          GH_TOKEN: ${{ github.token }}
-          SELECTED_RUN_ID: ${{ inputs.run_id }}
-        run: |
-          python tests/verify_ci_run.py --run-id "$SELECTED_RUN_ID"
-          cp tests/verify_runtime_image.py "$RUNNER_TEMP/verify_runtime_image.py"
+      - name: Retain trusted runtime verifier
+        run: cp tests/verify_runtime_image.py "$RUNNER_TEMP/verify_runtime_image.py"
       - name: Check out the verified source commit
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: ${{ steps.ci.outputs.commit }}
+          ref: ${{ needs.select.outputs.commit }}
           persist-credentials: false
       - name: Download the selected tested image
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
-          name: runtime-image-${{ steps.ci.outputs.commit }}
+          name: runtime-image-${{ needs.select.outputs.commit }}
           path: .artifacts/runtime-image
           github-token: ${{ github.token }}
-          run-id: ${{ inputs.run_id }}
+          run-id: ${{ env.SELECTED_RUN_ID }}
       - name: Verify and load tested runtime image
         id: runtime
         env:
-          VERIFIED_COMMIT: ${{ steps.ci.outputs.commit }}
+          VERIFIED_COMMIT: ${{ needs.select.outputs.commit }}
         run: python "$RUNNER_TEMP/verify_runtime_image.py" --archive .artifacts/runtime-image/image.tar.gz --checksum .artifacts/runtime-image/image.tar.gz.sha256 --metadata .artifacts/runtime-image/metadata.json --expected-commit "$VERIFIED_COMMIT"
       - uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1
         with:
@@ -63,7 +93,7 @@ jobs:
         id: registry
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-          VERIFIED_COMMIT: ${{ steps.ci.outputs.commit }}
+          VERIFIED_COMMIT: ${{ needs.select.outputs.commit }}
           VERIFIED_IMAGE_ID: ${{ steps.runtime.outputs.image_id }}
         run: |
           [[ "$FLY_APP" =~ ^[a-z0-9][a-z0-9-]*[a-z0-9]$ ]]
@@ -123,10 +153,9 @@ jobs:
           PY
       - name: Record promotion evidence
         env:
-          VERIFIED_COMMIT: ${{ steps.ci.outputs.commit }}
+          VERIFIED_COMMIT: ${{ needs.select.outputs.commit }}
           VERIFIED_IMAGE_ID: ${{ steps.runtime.outputs.image_id }}
           IMAGE_DIGEST: ${{ steps.registry.outputs.digest }}
-          SELECTED_RUN_ID: ${{ inputs.run_id }}
         run: |
           python - <<'PY'
           import os

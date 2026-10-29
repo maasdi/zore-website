@@ -12,13 +12,15 @@ The canonical domain is live. Public HTTPS `GET https://zore.dev/uptime` returne
 
 ## Promote a tested image
 
-Use the manual Deploy workflow with the run ID of successful main CI. Promotion checks the workflow, repository, branch, event, conclusion, source commit, archive checksum, image identity and provenance labels before deployment. Run only from `main`.
+Successful push-to-main CI runs automatically trigger the Promote tested image workflow. Failed CI and pull-request runs cannot deploy. Automatic promotion skips a commit if main has advanced before selection; deployments are serialized. Promotion checks the workflow, repository, branch, event, conclusion, source commit, archive checksum, image identity and provenance labels before deployment.
+
+For rollback or a retry, run Promote tested image manually from `main` with the run ID of a successful push-to-main CI run. Manual selection permits older tested commits.
 
 Create a narrowly scoped Fly deploy token with an explicit expiry, store it as the GitHub `FLY_API_TOKEN` secret, and rotate it before expiry. Do not put it in files, command examples or application responses. Restrict production environment access to maintainers as appropriate.
 
 The workflow uses `--ha=false` for the initial single-Machine deployment. A second production Machine is a deliberate availability/cost choice, not a default to create silently.
 
-Deploy the current configuration to apply idle suspension. Fly evaluates idle capacity every few minutes and resumes the Machine for incoming requests. UptimeRobot probes also count as traffic and can wake it; the first request after suspension may take longer. CI runs on pushes to `main`; promotion remains manual.
+Deploy the current configuration to apply idle suspension. Fly evaluates idle capacity every few minutes and resumes the Machine for incoming requests. UptimeRobot probes also count as traffic and can wake it; the first request after suspension may take longer.
 
 ## After deployment
 
