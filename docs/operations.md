@@ -16,7 +16,7 @@ Use the existing `zore-website` app in the Fly dashboard. Open Deployments and c
 
 Repository attachment and the automatic-deployment toggle are dashboard settings. Verify the repository and branch in the dashboard and confirm that a subsequent main push produces a successful Fly deployment before considering the connection complete.
 
-GitHub Actions runs validation only and needs no Fly deployment credential. Its CI checks and Fly's deployments run independently; the Fly integration does not reuse the CI runtime image or wait for the GitHub test suite. The Dockerfile itself checks formatting, native application tests and executable examples during the Fly build.
+GitHub Actions runs validation only and needs no Fly deployment credential. Its CI checks and Fly's deployments run independently; the Fly integration does not reuse the CI runtime image or wait for the GitHub test suite. The production Dockerfile compiles the application; formatting, native tests, executable examples and the shutdown fixture run separately in CI through `tests/Dockerfile`.
 
 Keep the existing single Machine. If a CLI deployment is needed, use `flyctl deploy --app zore-website --ha=false` to avoid creating an extra Machine automatically. A second production Machine is a deliberate availability/cost choice.
 

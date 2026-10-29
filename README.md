@@ -15,7 +15,7 @@ docker run --rm -p 127.0.0.1:8080:8080 zore-website:validated
 
 Open `http://127.0.0.1:8080`. Replace `docker` with `podman` when using Podman. The final image runs a native executable as UID/GID 65532 and contains no compiler, Rust, clang, Node or Python.
 
-The Docker build verifies the compiler version, locked offline installation, formatting, application tests, executable sample output and unchanged dependency lockfile. It also builds a separate shutdown-test executable, which is excluded from the release image.
+The production Dockerfile has two stages: compile the application, then package the native executable and content. It verifies the pinned compiler version, regular input files, locked offline installation and unchanged dependency lockfile. CI runs formatting, application tests, sample output checks and shutdown-fixture compilation through `tests/Dockerfile`.
 
 The public builder is pinned to:
 
@@ -32,7 +32,9 @@ Python 3.13+, Node 22+ and Chrome/Chromium are used by the development checks. T
 ```sh
 python tests/validate_content.py
 node --check public/assets/site.js
-docker build --platform linux/amd64 --target smoke-fixture -t zore-website:shutdown .
+docker build --platform linux/amd64 --target build -t zore-website:build .
+docker build --platform linux/amd64 --target release -t zore-website:validated .
+docker build --platform linux/amd64 --file tests/Dockerfile -t zore-website:shutdown .
 python tests/smoke.py --browser
 ```
 
@@ -51,7 +53,7 @@ Evidence and browser captures are written to `.artifacts/`. Browser clipboard ch
 
 ## Content and logos
 
-The application stays in one flat Zore package under `app/`. `main.ore` owns startup and shutdown; `config.ore` supplies the listen address and HTTP limits. `content.ore` defines the trusted pages and files, while `routes.ore` registers their handlers. `files.ore` handles bounded file reads and serving, `responses.ore` sets shared response headers, `monitoring.ore` tracks readiness, `discovery.ore` builds robots.txt and the sitemap, and `logging.ore` writes errors. Zore unit tests stay beside the code they exercise; `tests/` contains content, container, browser and deployment checks.
+The application stays in one flat Zore package under `app/`. `main.ore` owns startup and shutdown; `config.ore` supplies the listen address and HTTP limits. `content.ore` defines the trusted pages and files, while `routes.ore` registers their handlers. `files.ore` handles bounded file reads and serving, `responses.ore` sets shared response headers, `monitoring.ore` tracks readiness, `discovery.ore` builds robots.txt and the sitemap, and `logging.ore` writes errors. Zore unit tests stay beside the code they exercise; `tests/` contains content, container and browser checks.
 
 Author complete trusted HTML in `content/`; shared CSS and progressive clipboard behavior live in `public/assets/`. Add any new file to the explicit Zore route inventory and test contract. Never turn URL input into a filesystem path.
 

@@ -11,5 +11,6 @@
 !snippets/
 !snippets/**
 !tests/
+!tests/Dockerfile
 !tests/fixtures/
 !tests/fixtures/shutdown.source

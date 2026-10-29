@@ -29,8 +29,9 @@ jobs:
           node --check public/assets/site.js
       - name: Build production image and shutdown fixture
         run: |
+          docker build --platform linux/amd64 --target build -t zore-website:build .
           docker build --platform linux/amd64 --target release --build-arg SOURCE_REVISION="$GITHUB_SHA" -t zore-website:validated .
-          docker build --platform linux/amd64 --target smoke-fixture --build-arg SOURCE_REVISION="$GITHUB_SHA" -t zore-website:shutdown .
+          docker build --platform linux/amd64 --file tests/Dockerfile -t zore-website:shutdown .
       - name: Exercise tested runtime image
         env:
           BROWSER_PATH: /usr/bin/google-chrome

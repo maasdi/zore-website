@@ -5,29 +5,15 @@ COPY app ./app
 COPY content ./content
 COPY public ./public
 COPY snippets ./snippets
-COPY tests/fixtures/shutdown.source /tmp/shutdown.source
 RUN test "$(zore --version)" = "zore 0.1.0-alpha.1" \
-    && test -z "$(find app content public snippets -type l -print -quit)" \
     && test -z "$(find app content public snippets ! -type f ! -type d -print -quit)" \
     && cp zore.lock /tmp/verified.lock \
     && zore install --locked --offline . \
-    && zore fmt --check . \
-    && zore check --locked --offline app/main.ore \
-    && zore test --locked --offline . \
-    && zore run --locked --offline snippets/hello/main.ore > /tmp/hello-output \
-    && test "$(cat /tmp/hello-output)" = 'Hello, Zore!' \
-    && zore run --locked --offline snippets/ownership/main.ore > /tmp/ownership-output \
-    && test "$(cat /tmp/ownership-output)" = 'John' \
     && zore build --locked --offline app/main.ore \
     && mv main site \
     && cmp /tmp/verified.lock zore.lock
-RUN mkdir /tmp/shutdown-fixture \
-    && cp app/monitoring.ore app/responses.ore app/logging.ore /tmp/shutdown-fixture/ \
-    && cp /tmp/shutdown.source /tmp/shutdown-fixture/main.ore \
-    && zore build --offline /tmp/shutdown-fixture/main.ore \
-    && mv main shutdown-fixture
 
-FROM ubuntu:24.04@sha256:78d4744ead1f5b19b04d0df558ab182a5300903900755e515b2ca4d10eb2044d AS runtime
+FROM ubuntu:24.04@sha256:78d4744ead1f5b19b04d0df558ab182a5300903900755e515b2ca4d10eb2044d AS release
 ARG SOURCE_REVISION=unknown
 LABEL org.opencontainers.image.title="Zore website" \
       org.opencontainers.image.source="https://github.com/maasdi/zore-website" \
@@ -46,8 +32,3 @@ USER 65532:65532
 EXPOSE 8080
 STOPSIGNAL SIGTERM
 CMD ["/app/site"]
-
-FROM runtime AS smoke-fixture
-COPY --from=build /project/shutdown-fixture /app/site
-
-FROM runtime AS release
