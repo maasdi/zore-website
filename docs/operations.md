@@ -5,7 +5,7 @@
 - Canonical site: `https://zore.dev`.
 - Temporary Fly hostname: `https://zore-website.fly.dev`.
 - Fly app: `zore-website`, organization `personal`, primary region `sin`.
-- Runtime: Linux amd64, one shared CPU, 512 MiB, minimum one running Machine.
+- Runtime: Linux amd64, one shared CPU, 512 MiB, minimum zero running Machines; suspend when idle and resume on traffic.
 - Compiler: published `v0.1.0-alpha.1`, pinned builder digest in the Dockerfile.
 
 The canonical domain is live. Public HTTPS `GET https://zore.dev/uptime` returned the exact ready response on 2026-10-29. Keep the temporary Fly hostname available for deployment diagnostics.
@@ -17,6 +17,8 @@ Use the manual Deploy workflow with the run ID of successful main CI. Promotion 
 Create a narrowly scoped Fly deploy token with an explicit expiry, store it as the GitHub `FLY_API_TOKEN` secret, and rotate it before expiry. Do not put it in files, command examples or application responses. Restrict production environment access to maintainers as appropriate.
 
 The workflow uses `--ha=false` for the initial single-Machine deployment. A second production Machine is a deliberate availability/cost choice, not a default to create silently.
+
+Deploy the current configuration to apply idle suspension. Fly evaluates idle capacity every few minutes and resumes the Machine for incoming requests. UptimeRobot probes also count as traffic and can wake it; the first request after suspension may take longer. CI runs on pushes to `main`; promotion remains manual.
 
 ## After deployment
 

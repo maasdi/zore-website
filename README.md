@@ -72,7 +72,7 @@ Both methods send `Cache-Control: no-store`; HEAD sends the matching headers and
 
 ## Deployment
 
-The Fly app is `zore-website` in the personal organization, initially in Singapore. `fly.toml` configures HTTPS, a service-level `/healthz` check, a 20-second stop allowance and one minimum running Machine. The Zore server drains for up to ten seconds. Initial deployment must disable automatic high availability to avoid creating an extra Machine unexpectedly.
+The Fly app is `zore-website` in the personal organization, initially in Singapore. `fly.toml` configures HTTPS, a service-level `/healthz` check, a 20-second stop allowance and suspension when idle, with zero minimum running Machines. Fly resumes the Machine on incoming traffic; UptimeRobot probes can also wake it. The Zore server drains for up to ten seconds when stopped. Initial deployment must disable automatic high availability to avoid creating an extra Machine unexpectedly.
 
 CI builds and tests a runtime image before storing it as an artifact. The manual deployment workflow accepts a successful main CI run, verifies its source and image identity, then promotes that tested image by immutable digest. It does not rebuild during deployment. PR jobs receive no Fly credentials.
 
