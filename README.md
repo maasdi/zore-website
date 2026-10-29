@@ -1,6 +1,6 @@
 # Zore website
 
-The standalone source for [zore.dev](https://zore.dev), implemented in Zore with the approved Horizon identity. It serves the homepage, six documentation pages, downloadable examples and public monitoring endpoints.
+The standalone source for [zore.dev](https://zore.dev), implemented in Zore. It serves the homepage, six documentation pages, downloadable examples and public monitoring endpoints.
 
 The application uses the published `v0.1.0-alpha.1` compiler. No compiler checkout, submodule or source build is required. Native application compilation still uses the Rust and clang toolchain bundled in the pinned builder image.
 
@@ -49,7 +49,7 @@ The checks verify:
 
 Evidence and browser captures are written to `.artifacts/`. Browser clipboard checks use a stub and do not replace the developer's clipboard.
 
-## Content and identity
+## Content and logos
 
 The application stays in one flat Zore package under `app/`. `main.ore` owns startup and shutdown; `config.ore` supplies the listen address and HTTP limits. `content.ore` defines the trusted pages and files, while `routes.ore` registers their handlers. `files.ore` handles bounded file reads and serving, `responses.ore` sets shared response headers, `monitoring.ore` tracks readiness, `discovery.ore` builds robots.txt and the sitemap, and `logging.ore` writes errors. Zore unit tests stay beside the code they exercise; `tests/` contains content, container, browser and deployment checks.
 
@@ -57,7 +57,7 @@ Author complete trusted HTML in `content/`; shared CSS and progressive clipboard
 
 Canonical URLs and sitemap entries use `https://zore.dev`. Essential pages and navigation work without JavaScript. Assets currently use revalidation; content-hashed filenames are required before enabling long immutable caching.
 
-The Horizon identity assets live in `public/assets/`: [light wordmark](public/assets/horizon-wordmark.svg), [dark wordmark](public/assets/horizon-wordmark-dark.svg), [light symbol](public/assets/horizon-symbol.svg) and [dark symbol](public/assets/horizon-symbol-dark.svg). The favicon and social preview are kept alongside them. Use these files directly when updating the identity. Executable examples are in `snippets/`; deployment and monitoring guidance is in [operations](docs/operations.md).
+The Zore logo assets live in `public/assets/`: [light wordmark](public/assets/horizon-wordmark.svg), [dark wordmark](public/assets/horizon-wordmark-dark.svg), [light symbol](public/assets/horizon-symbol.svg) and [dark symbol](public/assets/horizon-symbol-dark.svg). The favicon and social preview are kept alongside them. Use these files directly when updating the logos. Executable examples are in `snippets/`; deployment and monitoring guidance is in [operations](docs/operations.md).
 
 ## Monitoring
 
