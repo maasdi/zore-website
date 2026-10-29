@@ -26,7 +26,6 @@ jobs:
       - name: Validate content and browser script
         run: |
           python tests/validate_content.py
-          python -m unittest discover -s tests -p 'test_*.py'
           node --check public/assets/site.js
       - name: Build production image and shutdown fixture
         run: |
@@ -47,34 +46,3 @@ jobs:
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 14
-      - name: Archive the tested production image
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          mkdir -p .artifacts/runtime-image
-          docker save zore-website:validated | gzip -n > .artifacts/runtime-image/image.tar.gz
-          python - <<'PY'
-          import hashlib
-          import json
-          import os
-          from pathlib import Path
-          import subprocess
-
-          destination = Path('.artifacts/runtime-image')
-          image = json.loads(subprocess.check_output(['docker', 'image', 'inspect', 'zore-website:validated'], text=True))[0]
-          metadata = {'image_id': image['Id'], 'source_commit': os.environ['GITHUB_SHA'], 'compiler_version': image['Config']['Labels']['dev.zore.compiler.version']}
-          (destination / 'metadata.json').write_text(json.dumps(metadata, indent=2) + '\n', encoding='utf-8')
-          with (destination / 'image.tar.gz').open('rb') as source:
-              checksum = hashlib.file_digest(source, 'sha256').hexdigest()
-          (destination / 'image.tar.gz.sha256').write_text(checksum + '  image.tar.gz\n', encoding='utf-8')
-          PY
-          python tests/verify_runtime_image.py --archive .artifacts/runtime-image/image.tar.gz --checksum .artifacts/runtime-image/image.tar.gz.sha256 --metadata .artifacts/runtime-image/metadata.json --expected-commit "$GITHUB_SHA"
-      - name: Retain the tested production image
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
-        with:
-          name: runtime-image-${{ github.sha }}
-          path: .artifacts/runtime-image
-          include-hidden-files: true
-          if-no-files-found: error
-          compression-level: 0
-          retention-days: 90

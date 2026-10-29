@@ -10,21 +10,21 @@
 
 The canonical domain is live. Public HTTPS `GET https://zore.dev/uptime` returned the exact ready response on 2026-10-29. Keep the temporary Fly hostname available for deployment diagnostics.
 
-## Promote a tested image
+## Deploy from the attached repository
 
-Successful push-to-main CI runs automatically trigger the Promote tested image workflow. Failed CI and pull-request runs cannot deploy. Automatic promotion skips a commit if main has advanced before selection; deployments are serialized. Promotion checks the workflow, repository, branch, event, conclusion, source commit, archive checksum, image identity and provenance labels before deployment.
+Use the existing `zore-website` app in the Fly dashboard. Open Deployments and connect the GitHub repository `maasdi/zore-website`. Select the root `fly.toml` and branch `main`, then enable automatic deployment in the deployment settings. Fly builds the root Dockerfile; its final `release` stage contains the production executable and content.
 
-For rollback or a retry, run Promote tested image manually from `main` with the run ID of a successful push-to-main CI run. Manual selection permits older tested commits.
+Repository attachment and the automatic-deployment toggle are dashboard settings. Verify the repository and branch in the dashboard and confirm that a subsequent main push produces a successful Fly deployment before considering the connection complete.
 
-Create a narrowly scoped Fly deploy token with an explicit expiry, store it as the GitHub `FLY_API_TOKEN` secret, and rotate it before expiry. Do not put it in files, command examples or application responses. Restrict production environment access to maintainers as appropriate.
+GitHub Actions runs validation only and needs no Fly deployment credential. Its CI checks and Fly's deployments run independently; the Fly integration does not reuse the CI runtime image or wait for the GitHub test suite. The Dockerfile itself checks formatting, native application tests and executable examples during the Fly build.
 
-The workflow uses `--ha=false` for the initial single-Machine deployment. A second production Machine is a deliberate availability/cost choice, not a default to create silently.
+Keep the existing single Machine. If a CLI deployment is needed, use `flyctl deploy --app zore-website --ha=false` to avoid creating an extra Machine automatically. A second production Machine is a deliberate availability/cost choice.
 
 Deploy the current configuration to apply idle suspension. Fly evaluates idle capacity every few minutes and resumes the Machine for incoming requests. UptimeRobot probes also count as traffic and can wake it; the first request after suspension may take longer.
 
 ## After deployment
 
-Verify `/`, `/docs/install`, a CSS asset and the social preview over public HTTPS. Require exact successful GET/HEAD `/uptime` responses and healthy Fly service checks. Check the running image digest and revision against the selected CI artifact.
+Verify `/`, `/docs/install`, a CSS asset and the social preview over public HTTPS. Require exact successful GET/HEAD `/uptime` responses and healthy Fly service checks. Record the deployed commit, release and image digest from Fly's deployment details.
 
 The native process receives SIGTERM directly. It withdraws readiness and drains admitted work under its ten-second application budget; Fly provides a best-effort 20-second stop allowance. A missing required file prevents startup; a content-read failure permanently withdraws readiness until restart.
 
@@ -36,7 +36,7 @@ Start with the subscription's available interval; the documented Free interval a
 
 ## Rollback
 
-Retain successful main CI runtime artifacts and their deployed registry digests. To roll back, manually promote a previous successful main run or deploy its recorded immutable registry image. Recheck health, monitoring, homepage and docs after rollback. No database or content migration is involved.
+Record successful Fly releases and their immutable registry image digests. To roll back, deploy a recorded image using `flyctl deploy --app zore-website --ha=false --image <recorded-image-digest>`. Revert the faulty commit on main as well so future automatic deployments retain the correction. Recheck health, monitoring, homepage and docs after rollback. No database or content migration is involved.
 
 ## Outstanding launch checks
 

@@ -74,9 +74,9 @@ Both methods send `Cache-Control: no-store`; HEAD sends the matching headers and
 
 The Fly app is `zore-website` in the personal organization, initially in Singapore. `fly.toml` configures HTTPS, a service-level `/healthz` check, a 20-second stop allowance and suspension when idle, with zero minimum running Machines. Fly resumes the Machine on incoming traffic; UptimeRobot probes can also wake it. The Zore server drains for up to ten seconds when stopped. Initial deployment must disable automatic high availability to avoid creating an extra Machine unexpectedly.
 
-CI builds and tests a runtime image before storing it as an artifact. Every successful push-to-main CI run automatically starts deployment. Promotion verifies the source and image identity, then deploys that tested image by immutable digest without rebuilding. Automatic runs skip commits superseded on main. Deployments are serialized; PR jobs receive no Fly credentials. The manual deployment workflow remains available to promote a previous successful main CI run for rollback.
+GitHub CI validates content, builds the container and runs native, HTTP, shutdown and browser checks. It retains test evidence and does not deploy. Fly's attached-repository integration builds the root Dockerfile and deploys changes pushed to `main`. These are independent runs; Fly deployment does not wait for GitHub CI.
 
-Before deploying, configure the GitHub `production` environment, an app-scoped `FLY_API_TOKEN` secret, and optionally `FLY_APP` if the app name changes. Keep credentials in the secret store. Domain/DNS, deployment evidence and rollback details are recorded in [operations](docs/operations.md).
+In the existing Fly app's Deployments settings, attach `maasdi/zore-website`, use the root `fly.toml`, select `main` and enable automatic deployment. This integration does not need a Fly token in GitHub Actions. Domain/DNS, deployment and rollback details are recorded in [operations](docs/operations.md).
 
 ## License
 
