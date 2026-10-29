@@ -51,6 +51,8 @@ Evidence and browser captures are written to `.artifacts/`. Browser clipboard ch
 
 ## Content and identity
 
+The application stays in one flat Zore package under `app/`. `main.ore` owns startup and shutdown; `config.ore` supplies the listen address and HTTP limits. `content.ore` defines the trusted pages and files, while `routes.ore` registers their handlers. `files.ore` handles bounded file reads and serving, `responses.ore` sets shared response headers, `monitoring.ore` tracks readiness, `discovery.ore` builds robots.txt and the sitemap, and `logging.ore` writes errors. Zore unit tests stay beside the code they exercise; `tests/` contains content, container, browser and deployment checks.
+
 Author complete trusted HTML in `content/`; shared CSS and progressive clipboard behavior live in `public/assets/`. Add any new file to the explicit Zore route inventory and test contract. Never turn URL input into a filesystem path.
 
 Canonical URLs and sitemap entries use `https://zore.dev`. Essential pages and navigation work without JavaScript. Assets currently use revalidation; content-hashed filenames are required before enabling long immutable caching.

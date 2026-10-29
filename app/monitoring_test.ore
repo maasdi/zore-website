@@ -1,7 +1,6 @@
 package main
 
 import "std/context"
-import "std/strings"
 
 func TestReadinessStartsUnavailable() error {
     let readiness = newReadiness(context.Background())
@@ -37,20 +36,6 @@ func TestShutdownImmediatelyWithdrawsReadiness() error {
     let status, body = readiness.status()
     if status != 503 || body != "{\"status\":\"unavailable\"}" {
         return error("cancelled application was reported ready")
-    }
-    return nil
-}
-
-func TestSitemapOnlyContainsPublicPages() error {
-    let document = sitemapText()
-    if strings.Count(document, "<loc>") != 7 {
-        return error("sitemap page count changed")
-    }
-    if strings.Contains(document, "/uptime") || strings.Contains(document, "/healthz") {
-        return error("monitoring endpoints were added to sitemap")
-    }
-    if !strings.Contains(document, "<loc>https://zore.dev/docs/status</loc>") {
-        return error("sitemap origin or page missing")
     }
     return nil
 }

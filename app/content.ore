@@ -1,0 +1,44 @@
+package main
+
+const htmlLimit = 262144
+const assetLimit = 1048576
+
+type siteFile struct {
+    route string
+    path string
+    mediaType string
+    cacheControl string
+    maxBytes int
+}
+
+func sitePages() Array<siteFile> {
+    return Array<siteFile>{
+        siteFile{route: "/", path: "content/index.html", mediaType: "text/html; charset=utf-8", cacheControl: "no-cache", maxBytes: htmlLimit},
+        siteFile{route: "/docs", path: "content/docs/index.html", mediaType: "text/html; charset=utf-8", cacheControl: "no-cache", maxBytes: htmlLimit},
+        siteFile{route: "/docs/install", path: "content/docs/install.html", mediaType: "text/html; charset=utf-8", cacheControl: "no-cache", maxBytes: htmlLimit},
+        siteFile{route: "/docs/first-program", path: "content/docs/first-program.html", mediaType: "text/html; charset=utf-8", cacheControl: "no-cache", maxBytes: htmlLimit},
+        siteFile{route: "/docs/language", path: "content/docs/language.html", mediaType: "text/html; charset=utf-8", cacheControl: "no-cache", maxBytes: htmlLimit},
+        siteFile{route: "/docs/tools", path: "content/docs/tools.html", mediaType: "text/html; charset=utf-8", cacheControl: "no-cache", maxBytes: htmlLimit},
+        siteFile{route: "/docs/status", path: "content/docs/status.html", mediaType: "text/html; charset=utf-8", cacheControl: "no-cache", maxBytes: htmlLimit},
+    }
+}
+
+func siteFiles() Array<siteFile> {
+    var files = sitePages()
+    let assets = Array<siteFile>{
+        siteFile{route: "/assets/site.css", path: "public/assets/site.css", mediaType: "text/css; charset=utf-8", cacheControl: "no-cache", maxBytes: assetLimit},
+        siteFile{route: "/assets/site.js", path: "public/assets/site.js", mediaType: "text/javascript; charset=utf-8", cacheControl: "no-cache", maxBytes: assetLimit},
+        siteFile{route: "/assets/horizon-wordmark.svg", path: "public/assets/horizon-wordmark.svg", mediaType: "image/svg+xml", cacheControl: "no-cache", maxBytes: assetLimit},
+        siteFile{route: "/assets/horizon-wordmark-dark.svg", path: "public/assets/horizon-wordmark-dark.svg", mediaType: "image/svg+xml", cacheControl: "no-cache", maxBytes: assetLimit},
+        siteFile{route: "/assets/horizon-symbol.svg", path: "public/assets/horizon-symbol.svg", mediaType: "image/svg+xml", cacheControl: "no-cache", maxBytes: assetLimit},
+        siteFile{route: "/assets/horizon-symbol-dark.svg", path: "public/assets/horizon-symbol-dark.svg", mediaType: "image/svg+xml", cacheControl: "no-cache", maxBytes: assetLimit},
+        siteFile{route: "/assets/favicon.svg", path: "public/assets/favicon.svg", mediaType: "image/svg+xml", cacheControl: "no-cache", maxBytes: assetLimit},
+        siteFile{route: "/assets/social-preview.png", path: "public/assets/social-preview.png", mediaType: "image/png", cacheControl: "no-cache", maxBytes: assetLimit},
+        siteFile{route: "/examples/hello.ore", path: "snippets/hello/main.ore", mediaType: "text/plain; charset=utf-8", cacheControl: "no-cache", maxBytes: htmlLimit},
+        siteFile{route: "/examples/ownership.ore", path: "snippets/ownership/main.ore", mediaType: "text/plain; charset=utf-8", cacheControl: "no-cache", maxBytes: htmlLimit},
+    }
+    for asset in assets {
+        files.push(asset)
+    }
+    return files
+}

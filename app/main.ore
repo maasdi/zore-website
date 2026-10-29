@@ -4,7 +4,6 @@ import "std/context"
 import "std/net/http"
 import "std/os"
 import "std/os/signal"
-import "std/time"
 
 func run() error {
     validateSiteFiles()?
@@ -17,20 +16,8 @@ func run() error {
         stop()
         return routerError
     }
-    var address = os.Getenv("ZORE_SITE_ADDR")
-    if address == "" {
-        address = "0.0.0.0:8080"
-    }
-    var config = http.DefaultConfig()
-    config.MaxHeaderBytes = 16384
-    config.MaxBodyBytes = 4096
-    config.MaxConnections = 256
-    config.ReadHeaderTimeout = 5 * time.Second
-    config.ReadBodyTimeout = 5 * time.Second
-    config.WriteTimeout = 10 * time.Second
-    config.IdleTimeout = 15 * time.Second
-    config.AcceptPollInterval = 50 * time.Millisecond
-    config.ShutdownTimeout = 10 * time.Second
+    let address = listenAddress()
+    let config = serverConfig()
     println("Starting Zore website on " + address)
     let serveError = http.ListenAndServeContext(lifecycle, address, router, config)
     readiness.revoke()

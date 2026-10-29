@@ -3,48 +3,13 @@ package main
 import "std/io"
 import "std/net/http"
 import "std/os"
-import "std/strconv"
-import "std/strings"
-
-const htmlLimit = 262144
-const assetLimit = 1048576
-
-type siteFile struct {
-    route string
-    path string
-    mediaType string
-    cacheControl string
-    limit int
-}
-
-func siteFiles() Array<siteFile> {
-    return Array<siteFile>{
-        siteFile{route: "/", path: "content/index.html", mediaType: "text/html; charset=utf-8", cacheControl: "no-cache", limit: htmlLimit},
-        siteFile{route: "/docs", path: "content/docs/index.html", mediaType: "text/html; charset=utf-8", cacheControl: "no-cache", limit: htmlLimit},
-        siteFile{route: "/docs/install", path: "content/docs/install.html", mediaType: "text/html; charset=utf-8", cacheControl: "no-cache", limit: htmlLimit},
-        siteFile{route: "/docs/first-program", path: "content/docs/first-program.html", mediaType: "text/html; charset=utf-8", cacheControl: "no-cache", limit: htmlLimit},
-        siteFile{route: "/docs/language", path: "content/docs/language.html", mediaType: "text/html; charset=utf-8", cacheControl: "no-cache", limit: htmlLimit},
-        siteFile{route: "/docs/tools", path: "content/docs/tools.html", mediaType: "text/html; charset=utf-8", cacheControl: "no-cache", limit: htmlLimit},
-        siteFile{route: "/docs/status", path: "content/docs/status.html", mediaType: "text/html; charset=utf-8", cacheControl: "no-cache", limit: htmlLimit},
-        siteFile{route: "/assets/site.css", path: "public/assets/site.css", mediaType: "text/css; charset=utf-8", cacheControl: "no-cache", limit: assetLimit},
-        siteFile{route: "/assets/site.js", path: "public/assets/site.js", mediaType: "text/javascript; charset=utf-8", cacheControl: "no-cache", limit: assetLimit},
-        siteFile{route: "/assets/horizon-wordmark.svg", path: "public/assets/horizon-wordmark.svg", mediaType: "image/svg+xml", cacheControl: "no-cache", limit: assetLimit},
-        siteFile{route: "/assets/horizon-wordmark-dark.svg", path: "public/assets/horizon-wordmark-dark.svg", mediaType: "image/svg+xml", cacheControl: "no-cache", limit: assetLimit},
-        siteFile{route: "/assets/horizon-symbol.svg", path: "public/assets/horizon-symbol.svg", mediaType: "image/svg+xml", cacheControl: "no-cache", limit: assetLimit},
-        siteFile{route: "/assets/horizon-symbol-dark.svg", path: "public/assets/horizon-symbol-dark.svg", mediaType: "image/svg+xml", cacheControl: "no-cache", limit: assetLimit},
-        siteFile{route: "/assets/favicon.svg", path: "public/assets/favicon.svg", mediaType: "image/svg+xml", cacheControl: "no-cache", limit: assetLimit},
-        siteFile{route: "/assets/social-preview.png", path: "public/assets/social-preview.png", mediaType: "image/png", cacheControl: "no-cache", limit: assetLimit},
-        siteFile{route: "/examples/hello.ore", path: "snippets/hello/main.ore", mediaType: "text/plain; charset=utf-8", cacheControl: "no-cache", limit: htmlLimit},
-        siteFile{route: "/examples/ownership.ore", path: "snippets/ownership/main.ore", mediaType: "text/plain; charset=utf-8", cacheControl: "no-cache", limit: htmlLimit},
-    }
-}
 
 func readSiteFile(file siteFile) (Array<byte>, error) {
     let info, statError = os.Stat(file.path)
     if statError != nil {
         return Array<byte>{}, statError
     }
-    if info.IsDir() || info.Size() < 0 || info.Size() > file.limit {
+    if info.IsDir() || info.Size() < 0 || info.Size() > file.maxBytes {
         return Array<byte>{}, error("website content has an invalid type or size: " + file.path)
     }
     let source, openError = os.Open(file.path)
@@ -58,7 +23,7 @@ func readSiteFile(file siteFile) (Array<byte>, error) {
     }
     for {
         let count, readError = source.Read(buffer[:])
-        if count < 0 || count > buffer.len() || data.len() + count > file.limit {
+        if count < 0 || count > buffer.len() || data.len() + count > file.maxBytes {
             _ = readError
             return Array<byte>{}, error("website content exceeds its size limit: " + file.path)
         }
@@ -88,23 +53,6 @@ func validateSiteFiles() error {
     return nil
 }
 
-func responseHeaders(w mut http.ResponseWriter, mediaType string, cacheControl string, size int) error {
-    w.SetHeader("Content-Type", mediaType)?
-    w.SetHeader("Content-Length", strconv.Itoa(size))?
-    w.SetHeader("Cache-Control", cacheControl)?
-    w.SetHeader("X-Content-Type-Options", "nosniff")?
-    w.SetHeader("Content-Security-Policy", "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'")?
-    return w.SetHeader("Referrer-Policy", "strict-origin-when-cross-origin")
-}
-
-func writeText(w mut http.ResponseWriter, status int, mediaType string, cacheControl string, text string) error {
-    let data = strings.Bytes(text)
-    responseHeaders(w, mediaType, cacheControl, data.len())?
-    w.WriteHeader(status)?
-    let _, err = w.Write(data[:])
-    return err
-}
-
 func loadSiteFile(file siteFile, readiness siteReadiness) (Array<byte>, error) {
     let data, readError = readSiteFile(file)
     if readError != nil {
@@ -120,7 +68,7 @@ func serveSiteFile(w mut http.ResponseWriter, file siteFile, readiness siteReadi
     if readError != nil {
         return writeText(w, 500, "text/plain; charset=utf-8", "no-store", "Internal server error\n")
     }
-    responseHeaders(w, file.mediaType, file.cacheControl, data.len())?
+    setResponseHeaders(w, file.mediaType, file.cacheControl, data.len())?
     w.WriteHeader(200)?
     let _, err = w.Write(data[:])
     return err

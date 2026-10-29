@@ -224,7 +224,7 @@ def validate(root):
     errors = []
     files = {}
     try:
-        registration = (root / "app/files.ore").read_text(encoding="utf-8")
+        registration = (root / "app/content.ore").read_text(encoding="utf-8")
         registered_files = re.findall(
             r'siteFile\{route: "([^"]+)", path: "([^"]+)", mediaType: "([^"]+)"',
             registration,
@@ -232,9 +232,9 @@ def validate(root):
         if len(registered_files) != len(STATIC_FILES) or {
             route: (path, media_type) for route, path, media_type in registered_files
         } != STATIC_FILES:
-            errors.append("app/files.ore registrations differ from the static route contract")
+            errors.append("app/content.ore registrations differ from the static route contract")
     except (OSError, UnicodeError) as error:
-        errors.append(f"cannot read app/files.ore registrations: {error}")
+        errors.append(f"cannot read app/content.ore registrations: {error}")
     for route, (relative, media_type) in STATIC_FILES.items():
         try:
             path = contained_file(root, relative)

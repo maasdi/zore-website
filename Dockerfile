@@ -22,7 +22,7 @@ RUN test "$(zore --version)" = "zore 0.1.0-alpha.1" \
     && mv main site \
     && cmp /tmp/verified.lock zore.lock
 RUN mkdir /tmp/shutdown-fixture \
-    && cp app/files.ore app/monitoring.ore app/routes.ore /tmp/shutdown-fixture/ \
+    && cp app/monitoring.ore app/responses.ore app/logging.ore /tmp/shutdown-fixture/ \
     && cp /tmp/shutdown.source /tmp/shutdown-fixture/main.ore \
     && zore build --offline /tmp/shutdown-fixture/main.ore \
     && mv main shutdown-fixture

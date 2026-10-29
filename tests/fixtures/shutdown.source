@@ -22,7 +22,7 @@ func run() error {
     readiness.activate()
     var routes = http.NewRouterBuilder()
     routes.Handle("GET /healthz", func(w mut http.ResponseWriter, r mut http.Request) error {
-        return monitor(w, readiness)
+        return serveReadiness(w, readiness)
     })
     routes.Handle("POST /drain", drainRequest)
     let router = routes.Build()?

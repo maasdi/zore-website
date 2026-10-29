@@ -1,0 +1,16 @@
+package main
+
+const siteOrigin = "https://zore.dev"
+
+func robotsText() string {
+    return "User-agent: *\nAllow: /\nSitemap: " + siteOrigin + "/sitemap.xml\n"
+}
+
+func sitemapText() string {
+    let pages = sitePages()
+    var document = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n"
+    for page in pages {
+        document += "  <url><loc>" + siteOrigin + page.route + "</loc></url>\n"
+    }
+    return document + "</urlset>\n"
+}

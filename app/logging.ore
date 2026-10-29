@@ -1,0 +1,9 @@
+package main
+
+import "std/errors"
+import "std/os"
+
+func logFailure(operation string, err error) {
+    let stderr = os.Stderr()
+    let _, _ = stderr.WriteString(operation + ": " + errors.Message(err) + "\n")
+}

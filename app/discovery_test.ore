@@ -1,0 +1,17 @@
+package main
+
+import "std/strings"
+
+func TestSitemapOnlyContainsPublicPages() error {
+    let document = sitemapText()
+    if strings.Count(document, "<loc>") != 7 {
+        return error("sitemap page count changed")
+    }
+    if strings.Contains(document, "/uptime") || strings.Contains(document, "/healthz") {
+        return error("monitoring endpoints were added to sitemap")
+    }
+    if !strings.Contains(document, "<loc>https://zore.dev/docs/status</loc>") {
+        return error("sitemap origin or page missing")
+    }
+    return nil
+}

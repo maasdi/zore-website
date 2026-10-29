@@ -1,0 +1,22 @@
+package main
+
+import "std/net/http"
+import "std/strconv"
+import "std/strings"
+
+func setResponseHeaders(w mut http.ResponseWriter, mediaType string, cacheControl string, size int) error {
+    w.SetHeader("Content-Type", mediaType)?
+    w.SetHeader("Content-Length", strconv.Itoa(size))?
+    w.SetHeader("Cache-Control", cacheControl)?
+    w.SetHeader("X-Content-Type-Options", "nosniff")?
+    w.SetHeader("Content-Security-Policy", "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'")?
+    return w.SetHeader("Referrer-Policy", "strict-origin-when-cross-origin")
+}
+
+func writeText(w mut http.ResponseWriter, status int, mediaType string, cacheControl string, text string) error {
+    let data = strings.Bytes(text)
+    setResponseHeaders(w, mediaType, cacheControl, data.len())?
+    w.WriteHeader(status)?
+    let _, err = w.Write(data[:])
+    return err
+}

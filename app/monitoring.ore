@@ -1,9 +1,7 @@
 package main
 
 import "std/context"
-import "std/errors"
 import "std/net/http"
-import "std/os"
 
 type readinessState struct {
     ready bool
@@ -50,12 +48,7 @@ func (readiness siteReadiness) status() (int, string) {
     return 503, "{\"status\":\"unavailable\"}"
 }
 
-func monitor(w mut http.ResponseWriter, readiness siteReadiness) error {
+func serveReadiness(w mut http.ResponseWriter, readiness siteReadiness) error {
     let status, body = readiness.status()
     return writeText(w, status, "application/json", "no-store", body)
-}
-
-func logFailure(operation string, err error) {
-    let stderr = os.Stderr()
-    let _, _ = stderr.WriteString(operation + ": " + errors.Message(err) + "\n")
 }
