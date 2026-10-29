@@ -8,7 +8,7 @@
 - Runtime: Linux amd64, one shared CPU, 512 MiB, minimum one running Machine.
 - Compiler: published `v0.1.0-alpha.1`, pinned builder digest in the Dockerfile.
 
-The domain was not configured when implementation began. Verify the temporary hostname first. Add the app's exact DNS records at the domain provider, then validate the certificate and canonical origin before reporting the public domain as live.
+The canonical domain is live. Public HTTPS `GET https://zore.dev/uptime` returned the exact ready response on 2026-10-29. Keep the temporary Fly hostname available for deployment diagnostics.
 
 ## Promote a tested image
 
@@ -36,4 +36,4 @@ Retain successful main CI runtime artifacts and their deployed registry digests.
 
 ## Outstanding launch checks
 
-DNS/certificate setup for `zore.dev`, UptimeRobot monitor configuration and actual alert delivery must be recorded when completed. Local tests and temporary-hostname checks do not establish those results.
+UptimeRobot monitor configuration and actual alert delivery must be recorded when completed. A successful public HTTPS probe does not establish external monitor or notification delivery.

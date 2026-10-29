@@ -55,7 +55,7 @@ Author complete trusted HTML in `content/`; shared CSS and progressive clipboard
 
 Canonical URLs and sitemap entries use `https://zore.dev`. Essential pages and navigation work without JavaScript. Assets currently use revalidation; content-hashed filenames are required before enabling long immutable caching.
 
-The retained [design baseline](design/README.md) includes the original reference, approved mockup and vector wordmarks. The executable examples are in `snippets/`. Full implementation scope and release gates are recorded in [plan.md](plan.md).
+The Horizon identity assets live in `public/assets/`: [light wordmark](public/assets/horizon-wordmark.svg), [dark wordmark](public/assets/horizon-wordmark-dark.svg), [light symbol](public/assets/horizon-symbol.svg) and [dark symbol](public/assets/horizon-symbol-dark.svg). The favicon and social preview are kept alongside them. Use these files directly when updating the identity. Executable examples are in `snippets/`; deployment and monitoring guidance is in [operations](docs/operations.md).
 
 ## Monitoring
 
