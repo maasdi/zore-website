@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0c1421">
+<meta name="description" content="Explore Zore, an early alpha native language with borrowed parameters, explicit errors, and deterministic cleanup.">
+<title>Zore ? Simple code. Strong guarantees.</title>
+<link rel="canonical" href="https://zore.dev/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Zore">
+<meta property="og:title" content="Zore ? Simple code. Strong guarantees.">
+<meta property="og:description" content="Explore Zore, an early alpha native language with borrowed parameters, explicit errors, and deterministic cleanup.">
+<meta property="og:url" content="https://zore.dev/">
+<meta property="og:image" content="https://zore.dev/assets/social-preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Zore. Simple code. Strong guarantees. A horizon over a dark navy background.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Zore ? Simple code. Strong guarantees.">
+<meta name="twitter:description" content="Explore Zore, an early alpha native language with borrowed parameters, explicit errors, and deterministic cleanup.">
+<meta name="twitter:image" content="https://zore.dev/assets/social-preview.png">
+<meta name="twitter:image:alt" content="Zore. Simple code. Strong guarantees.">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" class="icon-defs"><defs>
+<symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/></symbol>
+<symbol id="book" viewBox="0 0 24 24"><path d="M12 5c-3-2-6-2-10-1v15c4-1 7-1 10 1m0-15c3-2 6-2 10-1v15c-4-1-7-1-10 1V5Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5a10.5 10.5 0 0 0-3.32 20.46c.52.1.72-.23.72-.5v-1.95c-2.93.64-3.55-1.24-3.55-1.24-.48-1.22-1.17-1.55-1.17-1.55-.96-.66.07-.65.07-.65 1.06.07 1.62 1.09 1.62 1.09.94 1.61 2.46 1.14 3.06.87.09-.68.36-1.14.67-1.4-2.34-.26-4.8-1.17-4.8-5.2 0-1.15.41-2.08 1.08-2.81-.11-.27-.47-1.33.1-2.77 0 0 .88-.28 2.89 1.08a10.1 10.1 0 0 1 5.26 0c2.01-1.36 2.89-1.08 2.89-1.08.57 1.44.21 2.5.1 2.77.67.73 1.08 1.66 1.08 2.81 0 4.04-2.47 4.93-4.82 5.19.38.33.71.97.71 1.95v2.89c0 .28.19.61.72.5A10.5 10.5 0 0 0 12 1.5Z"/></symbol>
+<symbol id="code" viewBox="0 0 24 24"><path d="m8 6-6 6 6 6m8-12 6 6-6 6M14 3l-4 18" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="document" viewBox="0 0 24 24"><path d="M14 2H5a1 1 0 0 0-1 1v18a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V8l-6-6Zm0 0v6h6M8 13h8m-8 4h8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</defs></svg>
+<div id="top" class="top-bar">
+<header class="site-header frame">
+<a class="brand" href="/" aria-label="Zore home"><img src="/assets/horizon-wordmark.svg" alt="Zore" width="450" height="100"></a>
+<nav class="desktop-nav" aria-label="Main navigation"><a class="active" href="/" aria-current="page">Home</a><a href="/docs">Documentation</a><a class="nav-learn" href="/docs/language">Learn</a><a class="nav-examples" href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/examples">Examples</a><a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/roadmap.md">Roadmap</a></nav>
+<div class="header-actions"><a class="github-link" href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1" aria-label="Zore on GitHub"><svg aria-hidden="true"><use href="#github"/></svg></a><a class="button primary" href="/docs/install">Get started</a></div>
+<details class="mobile-nav"><summary>Explore <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary><nav class="mobile-nav-links" aria-label="Mobile navigation"><a href="/docs">Documentation</a><a href="/docs/language">Learn</a><a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/examples">Examples</a><a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/roadmap.md">Roadmap</a><a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1">GitHub</a><a href="/docs/install">Get started →</a></nav></details>
+</header>
+</div>
+<main id="main">
+<div class="dark-stage">
+<section class="hero frame" aria-labelledby="headline">
+<div class="hero-copy"><img class="hero-wordmark" src="/assets/horizon-wordmark.svg" alt="Zore" width="450" height="100"><h1 id="headline">Simple code. Strong guarantees.</h1><p class="hero-description">Zore is a natively compiled language with ownership-based memory safety, explicit errors, and deterministic resource cleanup.</p><div class="development"><span class="badge"><span class="badge-dot"></span>Early alpha · v0.1.0-alpha.1</span><span class="development-note">Early development. The compiler supports a growing subset; compatibility is not stable.</span></div><div class="hero-actions"><a class="button primary" href="/docs/install">Get started <svg aria-hidden="true"><use href="#arrow"/></svg></a><a class="button secondary" href="/docs/language"><svg aria-hidden="true" class="button-icon"><use href="#book"/></svg>Read the language guide</a></div></div>
+<div class="code-panel" aria-label="A runnable Hello, Zore example"><div class="code-toolbar"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="file-tab">main.ore</span><button class="copy-button" type="button" aria-label="Copy Hello, Zore source" data-copy-target="hello-source" data-copy-status="copy-status" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="7" y="7" width="13" height="15" rx="1.5"/><path d="M16 7V2H2v15h5"/></svg><span>Copy</span></button></div><div class="code-body"><pre class="line-numbers" aria-hidden="true">1
+2
+3
+4
+5</pre><pre><code id="hello-source" data-source="snippets/hello/main.ore"><span class="syntax-keyword">package</span> <span class="syntax-name">main</span>
+
+<span class="syntax-keyword">func</span> <span class="syntax-name">main</span>() {
+    <span class="syntax-call">println</span>(<span class="syntax-string">"Hello, Zore!"</span>)
+}
+</code></pre></div><div class="terminal" aria-label="Expected terminal output"><pre><span class="prompt">$</span> zore run main.ore
+<span class="terminal-output">Hello, Zore!</span></pre></div><p class="copy-status" id="copy-status" role="status" aria-live="polite"></p></div>
+</section>
+<div class="horizon" aria-hidden="true"></div>
+</div>
+<div class="feature-band"><section class="features frame" aria-label="Language principles">
+<article class="feature"><svg class="feature-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3c4 4 9 4 12 5v9c0 6-7 11-12 13C11 28 4 23 4 17V8c3-1 8-1 12-5Z"/></svg><h2>Memory safety by design</h2><p>Ownership and borrowing make resource lifetimes explicit. No garbage collector.</p></article>
+<article class="feature"><svg class="feature-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 13 7-13 7L3 10l13-7Zm-13 14 13 7 13-7M3 24l13 7 13-7"/></svg><h2>One model for concurrency</h2><p>Async/await, tasks, and channels follow ordinary ownership rules. <a href="/docs/language#concurrency">Explore concurrency</a>.</p></article>
+<article class="feature"><svg class="feature-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 2H6v28h21V10l-8-8Zm0 0v8h8m-15 6-3 3 3 3m9-6 3 3-3 3m-4-8-2 10"/></svg><h2>Familiar, readable syntax</h2><p>Errors are values. Handle them explicitly or propagate with <code>?</code>, preserving deterministic cleanup.</p></article>
+<article class="feature"><svg class="feature-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 2 13 7v15l-13 7L3 24V9l13-7Zm0 14 13-7M16 16 3 9m13 7v15"/></svg><h2>Built in the open</h2><p>An open-source alpha with public specification and conformance evidence. <a href="/docs/status">See current boundaries</a>.</p></article>
+</section></div>
+<div class="frame">
+<section class="workbench" aria-label="Get started and project status">
+<article class="quick-start" id="install"><span class="eyebrow">Quick start</span><h2 class="section-title">Your first “Hello, Zore!”</h2><p class="section-intro">Install the alpha archive for your platform, then save the example above as <code>main.ore</code>.</p><div class="release-row"><strong>v0.1.0-alpha.1</strong><a class="release-link" href="https://github.com/maasdi/zore/releases/tag/v0.1.0-alpha.1">Download the alpha <svg aria-hidden="true"><use href="#arrow"/></svg></a></div><div class="command-panel"><div class="command-heading"><span>Check, then run</span><span>After installation</span></div><pre><code>zore --version
+<span class="command">zore check</span> main.ore
+<span class="command">zore run</span> main.ore</code></pre></div><p class="setup-note">Native builds need <code>rustc</code> 1.98.1, clang with LLVM 15+, and a host linker. Windows also needs Visual Studio C++ Build Tools and the Windows SDK. <a href="/docs/install">Read the installation guide →</a></p></article>
+<article class="project-status"><span class="eyebrow">Project status</span><h2 class="section-title">Early days. Clear direction.</h2><p class="section-intro">The specification is written. The bootstrap compiler implements a growing subset. Language, library, and tooling may change.</p><div class="resource-list"><a class="resource" href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/roadmap.md"><svg class="resource-icon" aria-hidden="true"><use href="#book"/></svg><span><strong>Roadmap</strong><small>Implementation status and the work ahead</small></span><svg class="arrow" aria-hidden="true"><use href="#arrow"/></svg></a><a class="resource" href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/examples"><svg class="resource-icon" aria-hidden="true"><use href="#code"/></svg><span><strong>Examples</strong><small>Explore real Zore programs</small></span><svg class="arrow" aria-hidden="true"><use href="#arrow"/></svg></a><a class="resource" href="/docs"><svg class="resource-icon" aria-hidden="true"><use href="#document"/></svg><span><strong>Documentation</strong><small>Start with the language and its tools</small></span><svg class="arrow" aria-hidden="true"><use href="#arrow"/></svg></a><a class="resource" href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1"><svg class="resource-icon github-resource" aria-hidden="true"><use href="#github"/></svg><span><strong>GitHub</strong><small>Source code, issues, and contributions</small></span><svg class="arrow" aria-hidden="true"><use href="#arrow"/></svg></a></div></article>
+</section>
+<section class="docs" id="docs" aria-labelledby="docs-title"><div class="docs-header"><div><span class="eyebrow">A little less to keep in your head</span><h2 class="section-title" id="docs-title">Get to know the language.</h2></div><p>A few clear rules connect the code you write to the program that runs.</p></div><div class="doc-grid" id="learn"><article class="doc-card"><span class="doc-number">01 / OWNERSHIP</span><h3>Borrow by default.</h3><p>Plain parameters borrow. Use <code>mut</code> for mutable borrowing and <code>own</code> to transfer ownership. Function signatures tell you what they need.</p><a href="/docs/language">Explore the language <svg aria-hidden="true"><use href="#arrow"/></svg></a></article><article class="doc-card"><span class="doc-number">02 / NATIVE TOOLS</span><h3>From source to a program.</h3><p>Check and format without a native toolchain. Build, run, and test with Rust, clang, and your platform’s linker.</p><a href="/docs/install">Set up the alpha <svg aria-hidden="true"><use href="#arrow"/></svg></a></article><article class="doc-card"><span class="doc-number">03 / LEARN BY DOING</span><h3>Start small. Follow the code.</h3><p>Look through programs covering the implemented language, from simple functions to collections and concurrent work.</p><a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/examples">Browse the examples <svg aria-hidden="true"><use href="#arrow"/></svg></a></article></div></section>
+<aside class="bottom-note" aria-label="Alpha development notice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 10v7m0-11v1"/></svg><p><strong>An early alpha, with room to grow.</strong> Compatibility is not stable. Try small programs, expect changes, and read the <a class="inline-link" href="/docs/status">supported subset and limitations</a>.</p></aside>
+</div>
+</main>
+<footer class="site-footer frame"><div class="footer-identity"><a href="/" aria-label="Zore home"><img src="/assets/horizon-wordmark-dark.svg" alt="Zore" width="450" height="100"></a><span>Pronounced “zor”.</span></div><nav class="footer-links" aria-label="Footer navigation"><a href="/docs">Documentation</a><a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1">GitHub ↗</a><a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/LICENSE">Apache 2.0</a><a href="#top">Back to top ↑</a></nav></footer>
+</body>
+</html>

@@ -1,0 +1,138 @@
+name: Promote tested image
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Successful push-to-main CI run ID to promote
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: zore-website-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    environment: production
+    timeout-minutes: 20
+    env:
+      FLY_APP: ${{ vars.FLY_APP || 'zore-website' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.13'
+      - name: Verify selected CI run
+        id: ci
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SELECTED_RUN_ID: ${{ inputs.run_id }}
+        run: |
+          python tests/verify_ci_run.py --run-id "$SELECTED_RUN_ID"
+          cp tests/verify_runtime_image.py "$RUNNER_TEMP/verify_runtime_image.py"
+      - name: Check out the verified source commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ steps.ci.outputs.commit }}
+          persist-credentials: false
+      - name: Download the selected tested image
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        with:
+          name: runtime-image-${{ steps.ci.outputs.commit }}
+          path: .artifacts/runtime-image
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.run_id }}
+      - name: Verify and load tested runtime image
+        id: runtime
+        env:
+          VERIFIED_COMMIT: ${{ steps.ci.outputs.commit }}
+        run: python "$RUNNER_TEMP/verify_runtime_image.py" --archive .artifacts/runtime-image/image.tar.gz --checksum .artifacts/runtime-image/image.tar.gz.sha256 --metadata .artifacts/runtime-image/metadata.json --expected-commit "$VERIFIED_COMMIT"
+      - uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1
+        with:
+          version: '0.5.0'
+      - name: Promote tested image to Fly registry
+        id: registry
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          VERIFIED_COMMIT: ${{ steps.ci.outputs.commit }}
+          VERIFIED_IMAGE_ID: ${{ steps.runtime.outputs.image_id }}
+        run: |
+          [[ "$FLY_APP" =~ ^[a-z0-9][a-z0-9-]*[a-z0-9]$ ]]
+          flyctl auth docker
+          export REGISTRY_IMAGE="registry.fly.io/$FLY_APP:$VERIFIED_COMMIT"
+          docker tag "$VERIFIED_IMAGE_ID" "$REGISTRY_IMAGE"
+          docker push "$REGISTRY_IMAGE"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          import re
+          import subprocess
+
+          image = json.loads(subprocess.check_output(['docker', 'image', 'inspect', os.environ['REGISTRY_IMAGE']], text=True))[0]
+          prefix = 'registry.fly.io/' + os.environ['FLY_APP'] + '@sha256:'
+          digests = [value for value in image['RepoDigests'] if value.startswith(prefix) and re.fullmatch(r'[0-9a-f]{64}', value[len(prefix):])]
+          if len(digests) != 1:
+              raise ValueError('expected one immutable Fly registry digest')
+          with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as destination:
+              destination.write('digest=' + digests[0] + '\n')
+          PY
+      - name: Deploy the immutable tested image
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          IMAGE_DIGEST: ${{ steps.registry.outputs.digest }}
+        run: flyctl deploy --image "$IMAGE_DIGEST" --ha=false --app "$FLY_APP" --config fly.toml
+      - name: Verify public HTTPS readiness and installation guide
+        run: |
+          python - <<'PY'
+          import os
+          import time
+          import urllib.error
+          import urllib.request
+
+          class DirectResponse(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, request, response, code, message, headers, new_url):
+                  return None
+
+          opener = urllib.request.build_opener(DirectResponse)
+          origin = 'https://' + os.environ['FLY_APP'] + '.fly.dev'
+          for attempt in range(12):
+              try:
+                  with opener.open(origin + '/uptime', timeout=10) as response:
+                      if response.status != 200 or response.read() != b'{"status":"ok"}' or response.headers.get('Cache-Control') != 'no-store' or response.headers.get_content_type() != 'application/json':
+                          raise ValueError('public readiness response differs')
+                  with opener.open(origin + '/docs/install', timeout=10) as response:
+                      body = response.read()
+                      if response.status != 200 or response.headers.get_content_type() != 'text/html' or b'0.1.0-alpha.1' not in body:
+                          raise ValueError('public installation guide differs')
+                  break
+              except (OSError, urllib.error.URLError, ValueError):
+                  if attempt == 11:
+                      raise
+                  time.sleep(5)
+          print('Public HTTPS readiness and installation guide passed')
+          PY
+      - name: Record promotion evidence
+        env:
+          VERIFIED_COMMIT: ${{ steps.ci.outputs.commit }}
+          VERIFIED_IMAGE_ID: ${{ steps.runtime.outputs.image_id }}
+          IMAGE_DIGEST: ${{ steps.registry.outputs.digest }}
+          SELECTED_RUN_ID: ${{ inputs.run_id }}
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+
+          lines = ['Promoted tested Zore website image', '', 'Commit: `' + os.environ['VERIFIED_COMMIT'] + '`', 'Image ID: `' + os.environ['VERIFIED_IMAGE_ID'] + '`', 'Registry digest: `' + os.environ['IMAGE_DIGEST'] + '`', 'Compiler: `0.1.0-alpha.1`', 'CI run: ' + os.environ['SELECTED_RUN_ID'], 'HTTPS: https://' + os.environ['FLY_APP'] + '.fly.dev', 'Public readiness and installation guide passed.']
+          with Path(os.environ['GITHUB_STEP_SUMMARY']).open('a', encoding='utf-8') as destination:
+              destination.write('\n'.join(lines) + '\n')
+          PY

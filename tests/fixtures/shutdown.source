@@ -1,0 +1,44 @@
+package main
+
+import "std/context"
+import "std/net/http"
+import "std/os"
+import "std/os/signal"
+import "std/time"
+
+func drainRequest(w mut http.ResponseWriter, r mut http.Request) error {
+    println("drain-request-admitted")
+    var data = Array<byte>{0}
+    let count, err = r.Read(data[:])
+    if err != nil { return err }
+    if count != 1 || data[0] != 120 { return error("unexpected drain payload") }
+    return w.Text(200, "drained")
+}
+
+func run() error {
+    let selected = [signal.Signal; 2]{signal.Interrupt, signal.Terminate}
+    let lifecycle, stop = signal.NotifyContext(context.Background(), selected[:])?
+    let readiness = newReadiness(lifecycle)
+    readiness.activate()
+    var routes = http.NewRouterBuilder()
+    routes.Handle("GET /healthz", func(w mut http.ResponseWriter, r mut http.Request) error {
+        return monitor(w, readiness)
+    })
+    routes.Handle("POST /drain", drainRequest)
+    let router = routes.Build()?
+    var config = http.DefaultConfig()
+    config.ReadBodyTimeout = 10 * time.Second
+    config.AcceptPollInterval = 10 * time.Millisecond
+    config.ShutdownTimeout = 3 * time.Second
+    let err = http.ListenAndServeContext(lifecycle, "0.0.0.0:8080", router, config)
+    stop()
+    return err
+}
+
+func main() {
+    let err = run()
+    if err != nil {
+        logFailure("shutdown fixture failed", err)
+        os.Exit(1)
+    }
+}

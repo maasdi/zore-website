@@ -1,0 +1,57 @@
+package main
+
+import "std/net/http"
+
+const siteOrigin = "https://zore.dev"
+
+func redirectPage(w mut http.ResponseWriter, r mut http.Request, destination string) error {
+    var location = destination
+    if r.RawQuery() != "" {
+        location += "?" + r.RawQuery()
+    }
+    w.SetHeader("Location", location)?
+    responseHeaders(w, "text/plain; charset=utf-8", "no-cache", 0)?
+    return w.WriteHeader(308)
+}
+
+func robotsText() string {
+    return "User-agent: *\nAllow: /\nSitemap: " + siteOrigin + "/sitemap.xml\n"
+}
+
+func sitemapText() string {
+    let pages = [string; 7]{"/", "/docs", "/docs/install", "/docs/first-program", "/docs/language", "/docs/tools", "/docs/status"}
+    var document = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n"
+    for page in pages {
+        document += "  <url><loc>" + siteOrigin + page + "</loc></url>\n"
+    }
+    return document + "</urlset>\n"
+}
+
+func siteRouter(readiness siteReadiness) (http.Router, error) {
+    var routes = http.NewRouterBuilder()
+    let files = siteFiles()
+    for file in files {
+        routes.Handle("GET " + file.route, func(w mut http.ResponseWriter, r mut http.Request) error {
+            return serveSiteFile(w, file, readiness)
+        })
+    }
+    let pages = [string; 6]{"/docs", "/docs/install", "/docs/first-program", "/docs/language", "/docs/tools", "/docs/status"}
+    for page in pages {
+        routes.Handle("GET " + page + "/", func(w mut http.ResponseWriter, r mut http.Request) error {
+            return redirectPage(w, r, page)
+        })
+    }
+    routes.Handle("GET /healthz", func(w mut http.ResponseWriter, r mut http.Request) error {
+        return monitor(w, readiness)
+    })
+    routes.Handle("GET /uptime", func(w mut http.ResponseWriter, r mut http.Request) error {
+        return monitor(w, readiness)
+    })
+    routes.Handle("GET /robots.txt", func(w mut http.ResponseWriter, r mut http.Request) error {
+        return writeText(w, 200, "text/plain; charset=utf-8", "no-cache", robotsText())
+    })
+    routes.Handle("GET /sitemap.xml", func(w mut http.ResponseWriter, r mut http.Request) error {
+        return writeText(w, 200, "application/xml; charset=utf-8", "no-cache", sitemapText())
+    })
+    return routes.Build()
+}

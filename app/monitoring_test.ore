@@ -1,0 +1,56 @@
+package main
+
+import "std/context"
+import "std/strings"
+
+func TestReadinessStartsUnavailable() error {
+    let readiness = newReadiness(context.Background())
+    let status, body = readiness.status()
+    if status != 503 || body != "{\"status\":\"unavailable\"}" {
+        return error("unvalidated content was reported ready")
+    }
+    return nil
+}
+
+func TestReadinessRevocationIsSharedAndPermanent() error {
+    let readiness = newReadiness(context.Background())
+    let observer = readiness
+    readiness.activate()
+    let readyStatus, readyBody = observer.status()
+    if readyStatus != 200 || readyBody != "{\"status\":\"ok\"}" {
+        return error("validated content was not reported ready")
+    }
+    readiness.revoke()
+    readiness.activate()
+    let status, body = observer.status()
+    if status != 503 || body != "{\"status\":\"unavailable\"}" {
+        return error("readiness recovered after a permanent content failure")
+    }
+    return nil
+}
+
+func TestShutdownImmediatelyWithdrawsReadiness() error {
+    let lifecycle, cancel = context.WithCancel(context.Background())
+    let readiness = newReadiness(lifecycle)
+    readiness.activate()
+    cancel()
+    let status, body = readiness.status()
+    if status != 503 || body != "{\"status\":\"unavailable\"}" {
+        return error("cancelled application was reported ready")
+    }
+    return nil
+}
+
+func TestSitemapOnlyContainsPublicPages() error {
+    let document = sitemapText()
+    if strings.Count(document, "<loc>") != 7 {
+        return error("sitemap page count changed")
+    }
+    if strings.Contains(document, "/uptime") || strings.Contains(document, "/healthz") {
+        return error("monitoring endpoints were added to sitemap")
+    }
+    if !strings.Contains(document, "<loc>https://zore.dev/docs/status</loc>") {
+        return error("sitemap origin or page missing")
+    }
+    return nil
+}

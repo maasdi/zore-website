@@ -1,0 +1,6 @@
+name = "zore_website"
+version = "0.1.0"
+license = "Apache-2.0"
+zore-min = "0.1.0"
+zore-max = "0.2.0"
+platforms = ["linux", "macos", "windows"]

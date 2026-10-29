@@ -1,0 +1,58 @@
+package main
+
+import "std/context"
+import "std/os"
+import "std/strconv"
+import "std/time"
+
+type temporaryTestFile struct {
+    path string
+}
+
+func (file mut temporaryTestFile) drop() {
+    _ = os.Remove(file.path)
+}
+
+func TestMissingAssetPermanentlyWithdrawsSharedReadiness() error {
+    let readiness = newReadiness(context.Background())
+    let observer = readiness
+    readiness.activate()
+    let missing = siteFile{route: "/assets/missing.svg", path: "__zore_website_missing_fixture__/missing.svg", mediaType: "image/svg+xml", cacheControl: "no-cache", limit: assetLimit}
+    let _, loadError = loadSiteFile(missing, readiness)
+    if loadError == nil {
+        return error("missing asset unexpectedly loaded")
+    }
+    readiness.activate()
+    let status, body = observer.status()
+    if status != 503 || body != "{\"status\":\"unavailable\"}" {
+        return error("missing asset left another readiness handle available")
+    }
+    return nil
+}
+
+func TestContentSizeLimitAndExactBytes() error {
+    let path = ".zore-file-test-" + strconv.Itoa(time.Now())
+    let source = [byte; 4]{0, 127, 128, 255}
+    os.WriteFile(path, source[:], 0o600)?
+    let cleanup = temporaryTestFile{path: path}
+    let exact = siteFile{route: "/fixture", path: path, mediaType: "application/octet-stream", cacheControl: "no-store", limit: 4}
+    let data = readSiteFile(exact)?
+    if data.len() != 4 || data[0] != 0 || data[1] != 127 || data[2] != 128 || data[3] != 255 {
+        return error("binary content bytes changed")
+    }
+    let oversized = siteFile{route: "/fixture", path: path, mediaType: "application/octet-stream", cacheControl: "no-store", limit: 3}
+    let _, sizeError = readSiteFile(oversized)
+    if sizeError == nil {
+        return error("oversized content was accepted")
+    }
+    return nil
+}
+
+func TestDirectoriesAreNotContent() error {
+    let directory = siteFile{route: "/fixture", path: "app", mediaType: "text/html; charset=utf-8", cacheControl: "no-cache", limit: htmlLimit}
+    let _, loadError = readSiteFile(directory)
+    if loadError == nil {
+        return error("directory was accepted as content")
+    }
+    return nil
+}

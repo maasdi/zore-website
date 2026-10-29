@@ -1,0 +1,61 @@
+package main
+
+import "std/context"
+import "std/errors"
+import "std/net/http"
+import "std/os"
+
+type readinessState struct {
+    ready bool
+    failed bool
+}
+
+type siteReadiness struct {
+    state Mutex<readinessState>
+    lifecycle context.Context
+}
+
+func newReadiness(lifecycle context.Context) siteReadiness {
+    return siteReadiness{state: mutex(readinessState{ready: false, failed: false}), lifecycle: lifecycle}
+}
+
+func (readiness siteReadiness) activate() {
+    readiness.state.withLock(func(state mut readinessState) {
+        if !state.failed {
+            state.ready = true
+        }
+    })
+}
+
+func (readiness siteReadiness) revoke() {
+    readiness.state.withLock(func(state mut readinessState) {
+        state.ready = false
+        state.failed = true
+    })
+}
+
+func (readiness siteReadiness) available() bool {
+    if readiness.lifecycle.Err() != nil || readiness.state.isPoisoned() {
+        return false
+    }
+    return readiness.state.withLock(func(state mut readinessState) bool {
+        return state.ready && !state.failed
+    })
+}
+
+func (readiness siteReadiness) status() (int, string) {
+    if readiness.available() {
+        return 200, "{\"status\":\"ok\"}"
+    }
+    return 503, "{\"status\":\"unavailable\"}"
+}
+
+func monitor(w mut http.ResponseWriter, readiness siteReadiness) error {
+    let status, body = readiness.status()
+    return writeText(w, status, "application/json", "no-store", body)
+}
+
+func logFailure(operation string, err error) {
+    let stderr = os.Stderr()
+    let _, _ = stderr.WriteString(operation + ": " + errors.Message(err) + "\n")
+}

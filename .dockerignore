@@ -1,0 +1,15 @@
+*
+!Dockerfile
+!zore.toml
+!zore.lock
+!app/
+!app/**
+!content/
+!content/**
+!public/
+!public/**
+!snippets/
+!snippets/**
+!tests/
+!tests/fixtures/
+!tests/fixtures/shutdown.source

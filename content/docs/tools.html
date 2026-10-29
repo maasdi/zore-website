@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0c1421">
+<meta name="description" content="Use Zore formatting, application tests, package imports, lockfiles, offline commands, and the bundled standard library.">
+<title>Zore tools and packages — Format, test, and lock</title>
+<link rel="canonical" href="https://zore.dev/docs/tools">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Zore">
+<meta property="og:title" content="Zore tools and packages — Format, test, and lock">
+<meta property="og:description" content="Use Zore formatting, application tests, package imports, lockfiles, offline commands, and the bundled standard library.">
+<meta property="og:url" content="https://zore.dev/docs/tools">
+<meta property="og:image" content="https://zore.dev/assets/social-preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Zore. Simple code. Strong guarantees. A horizon over a dark navy background.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Zore tools and packages — Format, test, and lock">
+<meta name="twitter:description" content="Use Zore formatting, application tests, package imports, lockfiles, offline commands, and the bundled standard library.">
+<meta name="twitter:image" content="https://zore.dev/assets/social-preview.png">
+<meta name="twitter:image:alt" content="Zore. Simple code. Strong guarantees.">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" class="icon-defs"><defs>
+<symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/></symbol>
+<symbol id="book" viewBox="0 0 24 24"><path d="M12 5c-3-2-6-2-10-1v15c4-1 7-1 10 1m0-15c3-2 6-2 10-1v15c-4-1-7-1-10 1V5Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5a10.5 10.5 0 0 0-3.32 20.46c.52.1.72-.23.72-.5v-1.95c-2.93.64-3.55-1.24-3.55-1.24-.48-1.22-1.17-1.55-1.17-1.55-.96-.66.07-.65.07-.65 1.06.07 1.62 1.09 1.62 1.09.94 1.61 2.46 1.14 3.06.87.09-.68.36-1.14.67-1.4-2.34-.26-4.8-1.17-4.8-5.2 0-1.15.41-2.08 1.08-2.81-.11-.27-.47-1.33.1-2.77 0 0 .88-.28 2.89 1.08a10.1 10.1 0 0 1 5.26 0c2.01-1.36 2.89-1.08 2.89-1.08.57 1.44.21 2.5.1 2.77.67.73 1.08 1.66 1.08 2.81 0 4.04-2.47 4.93-4.82 5.19.38.33.71.97.71 1.95v2.89c0 .28.19.61.72.5A10.5 10.5 0 0 0 12 1.5Z"/></symbol>
+<symbol id="code" viewBox="0 0 24 24"><path d="m8 6-6 6 6 6m8-12 6 6-6 6M14 3l-4 18" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="document" viewBox="0 0 24 24"><path d="M14 2H5a1 1 0 0 0-1 1v18a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V8l-6-6Zm0 0v6h6M8 13h8m-8 4h8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</defs></svg>
+<div id="top" class="top-bar">
+<header class="site-header frame">
+<a class="brand" href="/" aria-label="Zore home"><img src="/assets/horizon-wordmark.svg" alt="Zore" width="450" height="100"></a>
+<nav class="desktop-nav" aria-label="Main navigation"><a href="/">Home</a><a class="active" href="/docs">Documentation</a><a class="nav-learn" href="/docs/language">Learn</a><a class="nav-examples" href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/examples">Examples</a><a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/roadmap.md">Roadmap</a></nav>
+<div class="header-actions"><a class="github-link" href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1" aria-label="Zore on GitHub"><svg aria-hidden="true"><use href="#github"/></svg></a><a class="button primary" href="/docs/install">Get started</a></div>
+<details class="mobile-nav"><summary>Explore <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary><nav class="mobile-nav-links" aria-label="Mobile navigation"><a class="active" href="/docs">Documentation</a><a href="/docs/language">Learn</a><a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/examples">Examples</a><a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/roadmap.md">Roadmap</a><a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1">GitHub</a><a href="/docs/install">Get started →</a></nav></details>
+</header>
+</div>
+<main class="docs-shell frame" id="main">
+<aside class="docs-sidebar"><span class="doc-version">v0.1.0-alpha.1</span><span class="nav-label">Documentation</span><nav aria-label="Documentation"><a href="/docs">Introduction</a><a href="/docs/install">Install Zore</a><a href="/docs/first-program">Your first program</a><a href="/docs/language">Language overview</a><a href="/docs/tools" aria-current="page">Tools and packages</a><a href="/docs/status">Alpha status</a></nav><span class="nav-label">Pinned reference</span><nav class="reference-nav" aria-label="Upstream reference"><a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/spec/language-spec.md">Language specification ↗</a><a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/roadmap.md">Roadmap ↗</a><a href="https://github.com/maasdi/zore/releases/tag/v0.1.0-alpha.1">Alpha release ↗</a></nav></aside>
+<div class="docs-main"><details class="docs-mobile-nav"><summary>Documentation · v0.1.0-alpha.1</summary><nav aria-label="Documentation pages"><a href="/docs">Introduction</a><a href="/docs/install">Install Zore</a><a href="/docs/first-program">Your first program</a><a href="/docs/language">Language overview</a><a href="/docs/tools" aria-current="page">Tools and packages</a><a href="/docs/status">Alpha status</a></nav></details><article class="docs-article"><p class="breadcrumb"><a href="/">Zore</a><span aria-hidden="true">/</span><a href="/docs">Documentation</a><span aria-hidden="true">/</span><span>Tools and packages</span></p><h1>Tools and packages</h1><p class="lead">Check and format with the compiler alone. Add the native toolchain for executables and application tests.</p>
+<h2 id="commands">Everyday commands</h2>
+<div class="doc-table-wrap"><table><thead><tr><th scope="col">Command</th><th scope="col">Behavior</th><th scope="col">Native toolchain</th></tr></thead><tbody>
+<tr><td><code>zore check main.ore</code></td><td>Check the file’s whole package; success is silent.</td><td>No</td></tr>
+<tr><td><code>zore fmt .</code></td><td>Format source recursively.</td><td>No</td></tr>
+<tr><td><code>zore fmt --check .</code></td><td>Check formatting without writing.</td><td>No</td></tr>
+<tr><td><code>zore build main.ore</code></td><td>Build an executable in the current directory.</td><td>Yes</td></tr>
+<tr><td><code>zore run main.ore</code></td><td>Build a temporary executable and run it.</td><td>Yes</td></tr>
+<tr><td><code>zore test .</code></td><td>Discover and execute application tests.</td><td>Yes, to execute tests</td></tr>
+</tbody></table></div>
+<p><code>check</code>, <code>build</code>, and <code>run</code> take a source file. Ordinary files in that file’s folder are compiled together. <code>fmt</code> and <code>test</code> accept a file or directory. Use <code>zore --help</code> for the command surface.</p>
+<h2 id="formatting">Formatting</h2>
+<pre><code>zore fmt .
+zore fmt --check .
+</code></pre>
+<p>The formatter does not need native build tools, manifests, or dependency resolution. It does not accept dependency flags. Use check mode in CI; the <a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/formatter.md">formatter reference</a> describes selection and behavior.</p>
+<h2 id="tests">Application tests</h2>
+<p>Put tests in files ending in <code>_test.ore</code>, using the same package clause as the implementation. A test is a top-level synchronous, non-generic function named <code>Test</code> followed by an ASCII uppercase letter. It takes no arguments and returns nothing or <code>error</code>.</p>
+<p>Use ordinary conditions, returned errors, or panics for assertions. The runner checks selected packages before execution, then runs each test in a fresh native process. The package’s <code>main</code> function is not called. A failed test does not prevent later tests from running.</p>
+<pre><code>zore test .
+</code></pre>
+<p>Executing tests needs the <a href="/docs/install#toolchain">native toolchain</a>. A selection with no tests still checks its packages and does not require native tools. There is no implicit test timeout, so bound potentially hanging suites in your caller or CI. See the <a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/testing.md">testing reference</a> and <a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/examples/application-tests">complete application-test example</a>.</p>
+<h2 id="packages">Packages and imports</h2>
+<p>A folder is a package. Import paths select project packages, explicitly declared local dependencies, pinned Git dependencies, or bundled standard packages. Visibility is checked across package boundaries and import cycles are rejected.</p>
+<p>Start with the <a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/local-dependencies.md">local dependency reference</a> for projects on disk. For shared dependencies, use the <a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/git-dependencies.md">Git and lockfile reference</a> and <a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/versioned-dependencies.md">tagged dependency reference</a>. Dependency identity and versions are explicit; there is no implicit registry lookup.</p>
+<h2 id="lockfiles">Lockfiles and offline use</h2>
+<p>In a project with <code>zore.toml</code>, install dependencies and generate <code>zore.lock</code>. Commit the lockfile. Use locked commands to consume it unchanged:</p>
+<pre><code>zore install .
+zore install --locked .
+zore check --locked --offline main.ore
+zore build --locked --offline main.ore
+zore test --locked --offline .
+</code></pre>
+<p><code>install --locked</code> can populate a missing cache while preserving the committed lock. Offline commands require every selected source to be cached already. <code>check</code>, <code>build</code>, <code>run</code>, and <code>test</code> never fetch dependencies or write a lockfile; missing data points you to installation.</p>
+<p>When you intentionally change dependency selections, review the manifest change and run <code>zore lock .</code>. Manifest bytes, including line endings, participate in integrity checks. Do not hand-edit a lockfile.</p>
+<h2 id="stdlib">Bundled standard packages</h2>
+<p>The published compiler embeds these packages and its runtime sources. No compiler checkout is needed to import them. These links open the alpha’s source API reference:</p>
+<div class="package-list">
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/bufio">std/bufio</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/bytes">std/bytes</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/context">std/context</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/encoding/json">std/encoding/json</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/errors">std/errors</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/fmt">std/fmt</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/io">std/io</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/maps">std/maps</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/math">std/math</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/net">std/net</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/net/http">std/net/http</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/net/url">std/net/url</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/os">std/os</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/os/exec">std/os/exec</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/os/signal">std/os/signal</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/path">std/path</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/path/filepath">std/path/filepath</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/slices">std/slices</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/sort">std/sort</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/strconv">std/strconv</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/strings">std/strings</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/sync">std/sync</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/time">std/time</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/unicode">std/unicode</a>
+<a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/std/unicode/utf8">std/unicode/utf8</a>
+</div>
+<p>The library covers text and bytes, collections, files and processes, contexts and synchronization, TCP networking, HTTP, JSON, and time. Individual APIs have ownership and platform constraints; an import’s presence does not imply parity with another language’s standard library.</p>
+<h2 id="native">Native libraries and host behavior</h2>
+<p>Curated native adapters support registered C/Rust sources and static linking under locked recipes. They do not introduce source-level raw pointers or an unsafe escape hatch. Read the <a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/native-libraries.md">native library reference</a> and <a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/platform-support.md">platform guide</a> before depending on host-specific behavior.</p>
+<nav class="page-navigation" aria-label="Previous and next pages"><a rel="prev" href="/docs/language"><span>← Previous</span>Language overview</a><a rel="next" href="/docs/status"><span>Next →</span>Alpha status</a></nav><p class="edit-link"><a href="https://github.com/maasdi/zore-website/blob/main/content/docs/tools.html">Edit this page on GitHub ↗</a></p><p class="source-provenance">Reviewed against Zore v0.1.0-alpha.1 · compiler source <code>edcf5847b259f28ef0bbd1409a8c6751b39725cb</code>. Upstream examples © Zore contributors, Apache 2.0.</p></article></div>
+<aside class="docs-outline"><strong>On this page</strong><nav aria-label="On this page"><a href="#commands">Everyday commands</a><a href="#formatting">Formatting</a><a href="#tests">Application tests</a><a href="#packages">Packages and imports</a><a href="#lockfiles">Lockfiles and offline use</a><a href="#stdlib">Bundled standard packages</a><a href="#native">Native libraries and host behavior</a></nav></aside>
+</main>
+<footer class="site-footer frame"><div class="footer-identity"><a href="/" aria-label="Zore home"><img src="/assets/horizon-wordmark-dark.svg" alt="Zore" width="450" height="100"></a><span>Pronounced “zor”.</span></div><nav class="footer-links" aria-label="Footer navigation"><a href="/docs">Documentation</a><a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1">GitHub ↗</a><a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/LICENSE">Apache 2.0</a><a href="#top">Back to top ↑</a></nav></footer>
+</body>
+</html>

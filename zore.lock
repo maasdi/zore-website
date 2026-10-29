@@ -1,0 +1,4 @@
+version = 1
+
+[projects]
+zore_website = { manifest = "8c815a762cb83e20b0c3d38f80e1a8e03bd63cf05a0ba41c7aa8a0fad2310d68", path = "." }

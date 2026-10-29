@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 40 256 170" role="img" aria-labelledby="title">
+  <title id="title">Zore horizon symbol for light backgrounds</title>
+  <defs><linearGradient id="sun" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#C75AF2"/><stop offset=".45" stop-color="#FF738F"/><stop offset="1" stop-color="#FFD17D"/></linearGradient></defs>
+  <path d="M58 144A70 70 0 0 1 198 144Q128 122 58 144Z" fill="url(#sun)"/>
+  <path d="M22 176Q128 130 234 176Q128 149 22 176Z" fill="#16243A"/>
+</svg>

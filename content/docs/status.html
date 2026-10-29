@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0c1421">
+<meta name="description" content="Understand Zore v0.1.0-alpha.1 support, host requirements, known limits, compiler provenance, and conformance evidence.">
+<title>Zore alpha status — Supported subset and boundaries</title>
+<link rel="canonical" href="https://zore.dev/docs/status">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Zore">
+<meta property="og:title" content="Zore alpha status — Supported subset and boundaries">
+<meta property="og:description" content="Understand Zore v0.1.0-alpha.1 support, host requirements, known limits, compiler provenance, and conformance evidence.">
+<meta property="og:url" content="https://zore.dev/docs/status">
+<meta property="og:image" content="https://zore.dev/assets/social-preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Zore. Simple code. Strong guarantees. A horizon over a dark navy background.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Zore alpha status — Supported subset and boundaries">
+<meta name="twitter:description" content="Understand Zore v0.1.0-alpha.1 support, host requirements, known limits, compiler provenance, and conformance evidence.">
+<meta name="twitter:image" content="https://zore.dev/assets/social-preview.png">
+<meta name="twitter:image:alt" content="Zore. Simple code. Strong guarantees.">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" class="icon-defs"><defs>
+<symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/></symbol>
+<symbol id="book" viewBox="0 0 24 24"><path d="M12 5c-3-2-6-2-10-1v15c4-1 7-1 10 1m0-15c3-2 6-2 10-1v15c-4-1-7-1-10 1V5Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5a10.5 10.5 0 0 0-3.32 20.46c.52.1.72-.23.72-.5v-1.95c-2.93.64-3.55-1.24-3.55-1.24-.48-1.22-1.17-1.55-1.17-1.55-.96-.66.07-.65.07-.65 1.06.07 1.62 1.09 1.62 1.09.94 1.61 2.46 1.14 3.06.87.09-.68.36-1.14.67-1.4-2.34-.26-4.8-1.17-4.8-5.2 0-1.15.41-2.08 1.08-2.81-.11-.27-.47-1.33.1-2.77 0 0 .88-.28 2.89 1.08a10.1 10.1 0 0 1 5.26 0c2.01-1.36 2.89-1.08 2.89-1.08.57 1.44.21 2.5.1 2.77.67.73 1.08 1.66 1.08 2.81 0 4.04-2.47 4.93-4.82 5.19.38.33.71.97.71 1.95v2.89c0 .28.19.61.72.5A10.5 10.5 0 0 0 12 1.5Z"/></symbol>
+<symbol id="code" viewBox="0 0 24 24"><path d="m8 6-6 6 6 6m8-12 6 6-6 6M14 3l-4 18" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="document" viewBox="0 0 24 24"><path d="M14 2H5a1 1 0 0 0-1 1v18a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V8l-6-6Zm0 0v6h6M8 13h8m-8 4h8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</defs></svg>
+<div id="top" class="top-bar">
+<header class="site-header frame">
+<a class="brand" href="/" aria-label="Zore home"><img src="/assets/horizon-wordmark.svg" alt="Zore" width="450" height="100"></a>
+<nav class="desktop-nav" aria-label="Main navigation"><a href="/">Home</a><a class="active" href="/docs">Documentation</a><a class="nav-learn" href="/docs/language">Learn</a><a class="nav-examples" href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/examples">Examples</a><a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/roadmap.md">Roadmap</a></nav>
+<div class="header-actions"><a class="github-link" href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1" aria-label="Zore on GitHub"><svg aria-hidden="true"><use href="#github"/></svg></a><a class="button primary" href="/docs/install">Get started</a></div>
+<details class="mobile-nav"><summary>Explore <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary><nav class="mobile-nav-links" aria-label="Mobile navigation"><a class="active" href="/docs">Documentation</a><a href="/docs/language">Learn</a><a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1/examples">Examples</a><a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/roadmap.md">Roadmap</a><a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1">GitHub</a><a href="/docs/install">Get started →</a></nav></details>
+</header>
+</div>
+<main class="docs-shell frame" id="main">
+<aside class="docs-sidebar"><span class="doc-version">v0.1.0-alpha.1</span><span class="nav-label">Documentation</span><nav aria-label="Documentation"><a href="/docs">Introduction</a><a href="/docs/install">Install Zore</a><a href="/docs/first-program">Your first program</a><a href="/docs/language">Language overview</a><a href="/docs/tools">Tools and packages</a><a href="/docs/status" aria-current="page">Alpha status</a></nav><span class="nav-label">Pinned reference</span><nav class="reference-nav" aria-label="Upstream reference"><a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/spec/language-spec.md">Language specification ↗</a><a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/roadmap.md">Roadmap ↗</a><a href="https://github.com/maasdi/zore/releases/tag/v0.1.0-alpha.1">Alpha release ↗</a></nav></aside>
+<div class="docs-main"><details class="docs-mobile-nav"><summary>Documentation · v0.1.0-alpha.1</summary><nav aria-label="Documentation pages"><a href="/docs">Introduction</a><a href="/docs/install">Install Zore</a><a href="/docs/first-program">Your first program</a><a href="/docs/language">Language overview</a><a href="/docs/tools">Tools and packages</a><a href="/docs/status" aria-current="page">Alpha status</a></nav></details><article class="docs-article"><p class="breadcrumb"><a href="/">Zore</a><span aria-hidden="true">/</span><a href="/docs">Documentation</a><span aria-hidden="true">/</span><span>Alpha status</span></p><h1>Alpha status</h1><p class="lead">A published compiler for a growing language subset. Early development, with concrete evidence and explicit boundaries.</p>
+<aside class="callout"><p><strong>Version: v0.1.0-alpha.1.</strong> This release does not declare complete MVP conformance or stable language/API compatibility. The compiler is the Rust bootstrap implementation; full compiler self-hosting remains a long-term goal.</p></aside>
+<h2 id="supported">What the alpha supports</h2>
+<ul>
+<li><strong>Frontend:</strong> parsing and diagnostics, name resolution, typing, and ownership/borrowing checks for the supported synchronous and async subset.</li>
+<li><strong>Values:</strong> primitives, strings, structs, collections, slices, closures, interfaces, and generic functions and struct types, subject to the specification’s restrictions.</li>
+<li><strong>Ownership:</strong> Copy/Move classification, partial moves, shared and mutable borrows, inferred lifetimes for stored views, and deterministic cleanup.</li>
+<li><strong>Errors:</strong> explicit error values and propagation, including async calls and task results.</li>
+<li><strong>Concurrency:</strong> polled async tasks, scoped tasks, channels and select, mutexes, timers, supported I/O, and cooperative cancellation APIs.</li>
+<li><strong>Native output:</strong> LLVM IR and a linked Rust runtime on validated hosts.</li>
+<li><strong>Tools:</strong> checking, formatting, native build/run, application tests, explicit dependencies, and lockfiles.</li>
+</ul>
+<h2 id="boundaries">Current boundaries</h2>
+<ul>
+<li>The implemented subset is smaller than the full specification and not every feature combination has exhaustive conformance evidence.</li>
+<li>Borrowed inputs to ordinary unscoped tasks are conservatively restricted. Scoped task borrowing has separate checked rules.</li>
+<li>Scheduling is cooperative, with no forced preemption. Dropping a task handle detaches work; it does not cancel it.</li>
+<li>Async frames retain values needed across suspension; general liveness-based frame shrinking is not implemented.</li>
+<li>Generic interfaces, generic named types, and methods with their own type parameters are outside the locked MVP forms.</li>
+<li>Package-level mutable <code>var</code> values, <code>:=</code>, raw pointers, source lifetime syntax, and <code>unsafe</code> are not supported source features.</li>
+<li>Cross-compilation and unlisted release hosts are not validated. OS-specific APIs and signal/termination behavior have platform limits.</li>
+<li>The existing Zore lexer/parser experiments do not make the distributed compiler self-hosted.</li>
+</ul>
+<h2 id="hosts">Native hosts and prerequisites</h2>
+<p>The release supplies Linux x64 GNU (glibc 2.39+, tested on Ubuntu 24.04), macOS 15+ on Apple Silicon and Intel, and Windows x64 MSVC archives. Native application builds use Rust 1.98.1, clang 15+, the host linker, and system libraries. Windows additionally needs Visual Studio C++ Build Tools and the Windows SDK.</p>
+<p><code>check</code> and <code>fmt</code> work without a native toolchain. See <a href="/docs/install">installation</a> for exact downloads and the pinned Linux builder image.</p>
+<h2 id="evidence">Evidence and the work ahead</h2>
+<p>The <a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/conformance/mvp.md">MVP evidence inventory</a> maps named compiler/runtime assertions and remaining coverage questions. Its historical baseline and dated follow-ups describe their own reviewed commits; they are not a universal proof for all programs. The <a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/docs/roadmap.md">roadmap</a> tracks follow-up work and acceptance criteria.</p>
+<p>Published-alpha provenance includes <a href="https://github.com/maasdi/zore/actions/runs/40802564771">merged-source CI</a> and <a href="https://github.com/maasdi/zore/actions/runs/40806155459">tagged distribution validation</a>. These validate the compiler and packaging paths exercised by those runs; they do not establish production readiness for every application.</p>
+<h2 id="authority">Source and authority</h2>
+<p>The <a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/spec/language-spec.md">language specification at v0.1.0-alpha.1</a> is authoritative. These website tutorials are maintained separately and describe that pinned release. Stay on the same release tag when following deeper reference links.</p>
+<p>Reviewed compiler source: <a href="https://github.com/maasdi/zore/commit/edcf5847b259f28ef0bbd1409a8c6751b39725cb"><code>edcf5847b259f28ef0bbd1409a8c6751b39725cb</code></a>. Download and artifact provenance remain on the <a href="https://github.com/maasdi/zore/releases/tag/v0.1.0-alpha.1">alpha release page</a>. Zore and adapted upstream examples are licensed under <a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/LICENSE">Apache License 2.0</a>.</p>
+<p>Report a reproducible problem through <a href="https://github.com/maasdi/zore/issues">compiler issues</a>. Follow the <a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/SECURITY.md">security policy</a> for private vulnerability reports.</p>
+<nav class="page-navigation" aria-label="Previous and next pages"><a rel="prev" href="/docs/tools"><span>← Previous</span>Tools and packages</a><a href="/docs"><span>Back to</span>Documentation →</a></nav><p class="edit-link"><a href="https://github.com/maasdi/zore-website/blob/main/content/docs/status.html">Edit this page on GitHub ↗</a></p><p class="source-provenance">Reviewed against Zore v0.1.0-alpha.1 · compiler source <code>edcf5847b259f28ef0bbd1409a8c6751b39725cb</code>. Upstream examples © Zore contributors, Apache 2.0.</p></article></div>
+<aside class="docs-outline"><strong>On this page</strong><nav aria-label="On this page"><a href="#supported">What the alpha supports</a><a href="#boundaries">Current boundaries</a><a href="#hosts">Native hosts and prerequisites</a><a href="#evidence">Evidence and the work ahead</a><a href="#authority">Source and authority</a></nav></aside>
+</main>
+<footer class="site-footer frame"><div class="footer-identity"><a href="/" aria-label="Zore home"><img src="/assets/horizon-wordmark-dark.svg" alt="Zore" width="450" height="100"></a><span>Pronounced “zor”.</span></div><nav class="footer-links" aria-label="Footer navigation"><a href="/docs">Documentation</a><a href="https://github.com/maasdi/zore/tree/v0.1.0-alpha.1">GitHub ↗</a><a href="https://github.com/maasdi/zore/blob/v0.1.0-alpha.1/LICENSE">Apache 2.0</a><a href="#top">Back to top ↑</a></nav></footer>
+</body>
+</html>
